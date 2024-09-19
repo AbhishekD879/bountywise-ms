@@ -8,13 +8,28 @@ service: bountywise-services
 provider:
   name: aws
   runtime: nodejs20.x
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL,"dummy_database_url"}
+    DATABASE_NAME: ${env:DATABASE_NAME,"dummy_database_name"}
+    DATABASE_USER: ${env:DATABASE_USER,"dummy_database_user"}
+    DATABASE_PASSWORD: ${env:DATABASE_PASSWORD,"dummy_database_password"}
+    DATABASE_PORT: ${env:DATABASE_PORT,"dummy_database_port"}
+    BOUNTY_SERVICE_URL: "/api/bounty/"
+    TAGS_SERVICE_URL: "/api/tags/"
 
 functions:
   bounty-services:
     handler: services/bounty-services/handler.handler
     events:
-      - httpApi: "*"
+      - http:
+          method: any
+          path: ${self:provider.environment.BOUNTY_SERVICE_URL}{any+}
   tags-services:
     handler: services/tags-services/handler.handler
     events:
-      - httpApi: "*"
+      - http:
+          method: any
+          path: ${self:provider.environment.TAGS_SERVICE_URL}{any+}
+
+plugins:
+  - serverless-offline
