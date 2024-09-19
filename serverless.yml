@@ -10,7 +10,11 @@ provider:
   runtime: nodejs20.x
 
 functions:
-  api:
-    handler: handler.handler
+  bounty-services:
+    handler: services/bounty-services/handler.handler
+    events:
+      - httpApi: "*"
+  tags-services:
+    handler: services/tags-services/handler.handler
     events:
       - httpApi: "*"
