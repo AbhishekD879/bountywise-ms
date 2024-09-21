@@ -9,6 +9,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   environment:
+    NODE_ENV: ${env:NODE_ENV,"development"}
     DATABASE_URL: ${env:DATABASE_URL,"dummy_database_url"}
     DATABASE_NAME: ${env:DATABASE_NAME,"dummy_database_name"}
     DATABASE_USER: ${env:DATABASE_USER,"dummy_database_user"}
@@ -18,18 +19,30 @@ provider:
     TAGS_SERVICE_URL: "/api/tags/"
 
 functions:
+  auth-authorizor:
+    handler: services/auth-authorizor/handler.handler
+    events:
+      - http:
+          method: any
+          path: ${self:provider.environment.AUTH_AUTHORIZOR_URL}{any+}
+
   bounty-services:
     handler: services/bounty-services/handler.handler
     events:
       - http:
           method: any
           path: ${self:provider.environment.BOUNTY_SERVICE_URL}{any+}
+          authorizer:
+            auth-authorizor
+
   tags-services:
     handler: services/tags-services/handler.handler
     events:
       - http:
           method: any
           path: ${self:provider.environment.TAGS_SERVICE_URL}{any+}
+          authorizer:
+            auth-authorizor
 
 plugins:
   - serverless-offline
