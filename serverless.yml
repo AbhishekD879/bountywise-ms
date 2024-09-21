@@ -24,7 +24,7 @@ functions:
     events:
       - http:
           method: any
-          path: ${self:provider.environment.AUTH_AUTHORIZOR_URL}{any+}
+          path: "/"
 
   bounty-services:
     handler: services/bounty-services/handler.handler
