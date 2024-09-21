@@ -1,7 +1,7 @@
 import { Lucia } from "lucia";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import db from "./tembo.db";
-import { sessionTable, userTable } from "@/schema";
+import db from "./db.js";
+import { sessionTable, userTable } from "./schema.js";
 
 // const adapter = new DrizzlePostgreSQLAdapter(db); // your adapter
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
@@ -23,4 +23,3 @@ export const lucia = new Lucia(adapter, {
     };
   },
 });
-

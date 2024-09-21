@@ -1,5 +1,5 @@
 import { lucia } from "../../lucia/lucia.js";
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const cookies = event.headers.Cookie || event.headers.cookie;
   let sessionId;
 

@@ -5,7 +5,7 @@ import tagsRoute from "./tagsRoute";
 const app = express();
 
 app.get("/", (req, res) => {
-    res.send("Hello World From Tags Services");
+  res.send("Hello World From Tags Services");
 });
 app.use(process.env.TAGS_SERVICE_URL, tagsRoute);
 

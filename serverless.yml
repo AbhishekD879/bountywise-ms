@@ -32,8 +32,7 @@ functions:
       - http:
           method: any
           path: ${self:provider.environment.BOUNTY_SERVICE_URL}{any+}
-          authorizer:
-            auth-authorizor
+          authorizer: auth-authorizor
 
   tags-services:
     handler: services/tags-services/handler.handler
@@ -41,8 +40,7 @@ functions:
       - http:
           method: any
           path: ${self:provider.environment.TAGS_SERVICE_URL}{any+}
-          authorizer:
-            auth-authorizor
+          authorizer: auth-authorizor
 
 plugins:
   - serverless-offline
