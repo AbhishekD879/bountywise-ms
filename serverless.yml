@@ -19,20 +19,18 @@ provider:
     TAGS_SERVICE_URL: "/api/tags/"
 
 functions:
-  auth-authorizor:
+  tokenAuthorizer:
     handler: services/auth-authorizor/handler.handler
-    events:
-      - http:
-          method: any
-          path: "/"
-
   bounty-services:
     handler: services/bounty-services/handler.handler
     events:
       - http:
           method: any
           path: ${self:provider.environment.BOUNTY_SERVICE_URL}{any+}
-          authorizer: auth-authorizor
+          authorizer:
+            name: tokenAuthorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Cookie
 
   tags-services:
     handler: services/tags-services/handler.handler
@@ -40,7 +38,10 @@ functions:
       - http:
           method: any
           path: ${self:provider.environment.TAGS_SERVICE_URL}{any+}
-          authorizer: auth-authorizor
+          authorizer:
+            name: tokenAuthorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Cookie
 
 plugins:
   - serverless-offline

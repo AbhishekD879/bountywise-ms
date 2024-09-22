@@ -1,28 +1,36 @@
 import { lucia } from "../../lucia/lucia.js";
-export const handler = async (event) => {
+
+export const handler = async (event, context, callback) => {
   const cookies = event.headers.Cookie || event.headers.cookie;
   let sessionId;
-
+  console.log("Event", event);
+  console.log("Context", context);
+  console.log("Callback", callback);
   // Extract session cookie
   if (cookies) {
     const match = cookies.match(/auth_session=([^;]+)/);
     sessionId = match ? match[1] : null;
   }
 
+  console.log("Session ID", sessionId);
+
   if (!sessionId) {
-    return generatePolicy("user", "Deny", event.methodArn);
+    return callback(null, generatePolicy("user", "Deny", event.routeArn));
   }
 
   try {
     const { session, user } = await lucia.validateSession(sessionId);
     if (session) {
-      return generatePolicy(user.userId, "Allow", event.methodArn);
+      return callback(
+        null,
+        generatePolicy(user.userId, "Allow", event.routeArn),
+      );
     } else {
-      return generatePolicy("user", "Deny", event.methodArn);
+      return callback(null, generatePolicy("user", "Deny", event.routeArn));
     }
   } catch (error) {
     console.error("Session validation error", error);
-    return generatePolicy("user", "Deny", event.methodArn);
+    return callback(null, generatePolicy("user", "Deny", event.routeArn));
   }
 };
 
