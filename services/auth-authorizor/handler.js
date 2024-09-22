@@ -15,22 +15,24 @@ export const handler = async (event, context, callback) => {
   console.log("Session ID", sessionId);
 
   if (!sessionId) {
-    return callback(null, generatePolicy("user", "Deny", event.routeArn));
+    return callback(null, generatePolicy("user", "Deny", event.methodArn));
   }
 
   try {
     const { session, user } = await lucia.validateSession(sessionId);
+    console.log("Session", session);
+    console.log("User", user);
     if (session) {
       return callback(
         null,
-        generatePolicy(user.userId, "Allow", event.routeArn),
+        generatePolicy(user.id, "Allow", event.methodArn),
       );
     } else {
-      return callback(null, generatePolicy("user", "Deny", event.routeArn));
+      return callback(null, generatePolicy("user", "Deny", event.methodArn));
     }
   } catch (error) {
     console.error("Session validation error", error);
-    return callback(null, generatePolicy("user", "Deny", event.routeArn));
+    return callback(null, generatePolicy("user", "Deny", event.methodArn));
   }
 };
 
